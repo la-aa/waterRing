@@ -21,6 +21,26 @@ python water_ring.py
 - 推荐直接运行 `water_ring.py`
 - 应用主入口位于 `water_ring_app/main.py`
 
+## 打包成 exe
+
+如果你不想再运行 `.py` 文件，可以把项目打包成 Windows 可执行程序。
+
+先安装 PyInstaller：
+
+```bash
+pip install pyinstaller
+```
+
+然后在项目根目录执行：
+
+```powershell
+.\build.ps1
+```
+
+打包完成后，`exe` 会生成在 `dist\\waterRing.exe`。
+
+项目会优先读取 `ico\\myCat_ico.jpg` 作为窗口图标，并在打包时自动转换为 `ico\\myCat_ico.ico` 用作 `exe` 图标。后期你只要替换这张图片即可。
+
 ## 功能说明
 
 - 按设定时间提醒喝水
@@ -34,6 +54,7 @@ python water_ring.py
 - 托盘和开机自启功能仅适用于 Windows
 - 项目不依赖第三方库，直接使用系统自带的 Tkinter
 - 如果启动后没有看到窗口，检查是否已经最小化到托盘
+- 如果打包成 `exe`，开机自启会自动指向 `exe` 本身，不再依赖 `py` 文件
 
 ## 打包建议
 

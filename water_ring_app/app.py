@@ -3,8 +3,11 @@ import math
 import random
 import sys
 import tkinter as tk
+from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Optional
+
+from PIL import Image, ImageTk
 
 from .config import AppConfig
 from .startup import is_enabled as startup_is_enabled
@@ -38,7 +41,9 @@ class WaterRingAssistant:
         self.drag_offset = (0, 0)
         self.settings_window: Optional[tk.Toplevel] = None
         self.tray = WinTrayIcon(self.show, self.open_settings, self.exit_app) if is_windows() else None
+        self._icon_photo = None
 
+        self._load_window_icon()
         self._build_ui()
         self._place_bottom_right()
         self._bind_events()
@@ -49,6 +54,18 @@ class WaterRingAssistant:
 
         self.root.after(500, self._tick)
         self.root.protocol("WM_DELETE_WINDOW", self.hide)
+
+    def _load_window_icon(self) -> None:
+        icon_path = Path(__file__).resolve().parents[1] / "ico" / "myCat_ico.jpg"
+        if not icon_path.exists():
+            return
+        try:
+            image = Image.open(icon_path)
+            image = image.resize((64, 64), Image.LANCZOS)
+            self._icon_photo = ImageTk.PhotoImage(image)
+            self.root.iconphoto(True, self._icon_photo)
+        except Exception:
+            pass
 
     def _build_ui(self) -> None:
         self.frame = tk.Frame(self.root, bg="#FFF7FB", bd=1, relief="solid")

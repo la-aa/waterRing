@@ -32,8 +32,11 @@ def set_enabled(enabled: bool) -> None:
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, RUN_KEY, 0, winreg.KEY_SET_VALUE) as key:
             if enabled:
                 exe = Path(sys.executable)
-                script = Path(__file__).resolve().parents[1] / "water_ring.py"
-                value = f'"{exe}" "{script}"'
+                if getattr(sys, "frozen", False):
+                    value = f'"{exe}"'
+                else:
+                    script = Path(__file__).resolve().parents[1] / "water_ring.py"
+                    value = f'"{exe}" "{script}"'
                 winreg.SetValueEx(key, APP_NAME, 0, winreg.REG_SZ, value)
             else:
                 try:
