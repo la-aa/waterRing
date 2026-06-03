@@ -1,0 +1,64 @@
+{
+  "name": "waterring",
+  "version": "0.1.0",
+  "description": "A tiny desktop cat that reminds you to drink water.",
+  "author": "la-aa",
+  "license": "MIT",
+  "type": "module",
+  "main": "out/main/main.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "tsc --noEmit && electron-vite build",
+    "dist": "tsc --noEmit && electron-vite build && electron-builder --win",
+    "dist:win": "tsc --noEmit && electron-vite build && electron-builder --win"
+  },
+  "build": {
+    "appId": "com.la-aa.waterring",
+    "productName": "waterRing",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "out/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "ico",
+        "to": "ico",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "electron-store": "^10.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "electron": "^39.2.5",
+    "electron-builder": "^26.8.1",
+    "electron-vite": "^4.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4"
+  }
+}

@@ -1,0 +1,185 @@
+:root {
+  font-family: "Microsoft YaHei UI", system-ui, sans-serif;
+  color: #40343d;
+  background: #fff7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #fff7fb;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+  padding: 18px;
+  background: linear-gradient(180deg, #fff7fb 0%, #fffdfd 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 2px solid #d7b8c6;
+}
+
+.hero {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.pet-shell {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  background: #ffe9f1;
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 0 1px rgba(207, 164, 189, 0.28);
+}
+
+.pet-face {
+  position: relative;
+  width: 48px;
+  height: 38px;
+  border-radius: 18px;
+  background: #f8d7b7;
+  border: 2px solid #cfab83;
+}
+
+.ear {
+  position: absolute;
+  top: -12px;
+  width: 14px;
+  height: 20px;
+  background: #f8d7b7;
+  border: 2px solid #cfab83;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.ear.left {
+  left: 6px;
+  transform: rotate(-12deg);
+}
+
+.ear.right {
+  right: 6px;
+  transform: rotate(12deg);
+}
+
+.eye {
+  position: absolute;
+  top: 15px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #5e4a40;
+}
+
+.eye.left {
+  left: 12px;
+}
+
+.eye.right {
+  right: 12px;
+}
+
+.nose {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  width: 6px;
+  height: 4px;
+  transform: translateX(-50%);
+  background: #c98ca0;
+  border-radius: 999px;
+}
+
+.cheek {
+  position: absolute;
+  top: 23px;
+  width: 8px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 146, 176, 0.45);
+}
+
+.cheek.left {
+  left: 6px;
+}
+
+.cheek.right {
+  right: 6px;
+}
+
+.hero-copy h1 {
+  margin: 0 0 4px;
+  font-size: 28px;
+}
+
+.hero-copy p,
+.status {
+  margin: 0;
+  font-size: 14px;
+}
+
+.status {
+  margin-top: 6px;
+  color: #7b6471;
+}
+
+.panel {
+  display: grid;
+  gap: 10px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #e4d5de;
+  border-radius: 10px;
+  background: white;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+button {
+  flex: 1;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #ff6f91;
+  color: white;
+  font-weight: 700;
+}
+
+button.secondary {
+  background: #8eb7ff;
+  color: #17324f;
+}

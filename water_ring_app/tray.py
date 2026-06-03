@@ -1,6 +1,8 @@
 import ctypes
 import sys
 
+from .logger import write_exception
+
 
 def is_windows() -> bool:
     return sys.platform.startswith("win")
@@ -72,46 +74,50 @@ class WinTrayIcon:
             ctypes.windll.user32.PostMessageW(self._hwnd, 0x0012, 0, 0)
 
     def _run(self) -> None:
-        user32 = ctypes.windll.user32
-        kernel32 = ctypes.windll.kernel32
-        WNDPROCTYPE = ctypes.WINFUNCTYPE(ctypes.c_longlong, ctypes.c_void_p, ctypes.c_uint, ctypes.c_uint64, ctypes.c_int64)
+        try:
+            user32 = ctypes.windll.user32
+            kernel32 = ctypes.windll.kernel32
+            WNDPROCTYPE = ctypes.WINFUNCTYPE(ctypes.c_longlong, ctypes.c_void_p, ctypes.c_uint, ctypes.c_uint64, ctypes.c_int64)
 
-        def wndproc(hwnd, msg, wparam, lparam):
-            if msg in (self.WM_TRAY, self.WM_TASKBARCREATED):
-                if lparam == self.WM_LBUTTONUP:
-                    self.on_open()
-                elif lparam == self.WM_RBUTTONUP:
-                    self._show_menu()
-                return 0
-            if msg == self.WM_COMMAND:
-                cmd = wparam & 0xFFFF
-                if cmd == self.ID_OPEN:
-                    self.on_open()
-                elif cmd == self.ID_SETTINGS:
-                    self.on_settings()
-                elif cmd == self.ID_EXIT:
-                    self.on_exit()
-                return 0
-            if msg == 0x0010:
-                self._delete_icon()
-                user32.PostQuitMessage(0)
-                return 0
-            return user32.DefWindowProcW(hwnd, msg, wparam, lparam)
+            def wndproc(hwnd, msg, wparam, lparam):
+                if msg in (self.WM_TRAY, self.WM_TASKBARCREATED):
+                    if lparam == self.WM_LBUTTONUP:
+                        self.on_open()
+                    elif lparam == self.WM_RBUTTONUP:
+                        self._show_menu()
+                    return 0
+                if msg == self.WM_COMMAND:
+                    cmd = wparam & 0xFFFF
+                    if cmd == self.ID_OPEN:
+                        self.on_open()
+                    elif cmd == self.ID_SETTINGS:
+                        self.on_settings()
+                    elif cmd == self.ID_EXIT:
+                        self.on_exit()
+                    return 0
+                if msg == 0x0010:
+                    self._delete_icon()
+                    user32.PostQuitMessage(0)
+                    return 0
+                return user32.DefWindowProcW(hwnd, msg, wparam, lparam)
 
-        self._wndproc = WNDPROCTYPE(wndproc)
-        class_name = "WaterRingTrayWindow"
-        wndclass = ctypes.wintypes.WNDCLASSW()
-        wndclass.lpfnWndProc = self._wndproc
-        wndclass.hInstance = kernel32.GetModuleHandleW(None)
-        wndclass.lpszClassName = class_name
-        user32.RegisterClassW(ctypes.byref(wndclass))
-        self._hwnd = user32.CreateWindowExW(0, class_name, class_name, 0, 0, 0, 0, 0, 0, 0, wndclass.hInstance, None)
-        self._add_icon()
+            self._wndproc = WNDPROCTYPE(wndproc)
+            class_name = "WaterRingTrayWindow"
+            wndclass = ctypes.wintypes.WNDCLASSW()
+            wndclass.lpfnWndProc = self._wndproc
+            wndclass.hInstance = kernel32.GetModuleHandleW(None)
+            wndclass.lpszClassName = class_name
+            user32.RegisterClassW(ctypes.byref(wndclass))
+            self._hwnd = user32.CreateWindowExW(0, class_name, class_name, 0, 0, 0, 0, 0, 0, 0, wndclass.hInstance, None)
+            self._add_icon()
 
-        msg = ctypes.wintypes.MSG()
-        while user32.GetMessageW(ctypes.byref(msg), 0, 0, 0) != 0:
-            user32.TranslateMessage(ctypes.byref(msg))
-            user32.DispatchMessageW(ctypes.byref(msg))
+            msg = ctypes.wintypes.MSG()
+            while user32.GetMessageW(ctypes.byref(msg), 0, 0, 0) != 0:
+                user32.TranslateMessage(ctypes.byref(msg))
+                user32.DispatchMessageW(ctypes.byref(msg))
+        except Exception as exc:
+            write_exception(exc)
+            self.on_open()
 
     def _show_menu(self) -> None:
         user32 = ctypes.windll.user32

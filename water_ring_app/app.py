@@ -49,8 +49,9 @@ class WaterRingAssistant:
         self._bind_events()
         self._sync_next_reminder()
 
-        if self.config.auto_start and self.tray:
+        if self.tray:
             self.tray.start()
+            self.root.after(1500, self._ensure_visible_if_tray_failed)
 
         self.root.after(500, self._tick)
         self.root.protocol("WM_DELETE_WINDOW", self.hide)
@@ -126,6 +127,12 @@ class WaterRingAssistant:
 
     def _sync_next_reminder(self) -> None:
         self.config.next_reminder = datetime.now() + timedelta(minutes=self.config.interval_minutes)
+
+    def _ensure_visible_if_tray_failed(self) -> None:
+        if not self.active and self.config.launch_minimized:
+            if not self.tray or not self.tray._hwnd:
+                self.show()
+                self.message_var.set("托盘没有起来，我先把窗口打开了。")
 
     def toggle_idle(self, _event=None) -> None:
         if self.active:
@@ -298,7 +305,7 @@ class WaterRingAssistant:
         self.root.destroy()
 
     def run(self) -> None:
-        if self.config.launch_minimized:
+        if self.config.auto_start and self.config.launch_minimized:
             self.hide()
         else:
             self.show()
